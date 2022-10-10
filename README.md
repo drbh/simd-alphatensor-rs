@@ -39,6 +39,55 @@ fn main() {
 }
 ```
 
+### Benchmarks
+
+Run with
+```bash
+cargo bench
+```
+
+| Benchmark      | Average Runtime |
+| ----------- | ----------- |
+| ndarry_2x2x2      | 314.53 ns       |
+| simd_alphatensor_2x2x2   | 13.821 ns        |
+| ndarry_4x4x4   | 402.60 ns        |
+| simd_alphatensor_4x4x4   | 92.732 ns        |
+
+```
+➜  simd-alphatensor-rs (main) ✗ cargo bench
+    Finished bench [optimized] target(s) in 0.13s
+     Running unittests src/lib.rs (target/release/deps/simd_alphatensor_rs-115473bd3321baa9)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+Benchmarking simd_alphatensor_2x2x2: Collecting 100 samples in estimated 5.0000 s (3                                                                                    simd_alphatensor_2x2x2  time:   [13.798 ns 13.821 ns 13.847 ns]
+                        change: [-4.8455% -3.8407% -2.9273%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 7 outliers among 100 measurements (7.00%)
+  4 (4.00%) high mild
+  3 (3.00%) high severe
+
+Benchmarking ndarry_2x2x2: Collecting 100 samples in estimated 5.0003 s (16M iterati                                                                                    ndarry_2x2x2            time:   [311.79 ns 314.53 ns 317.32 ns]
+                        change: [-10.524% -8.5993% -6.6801%] (p = 0.00 < 0.05)
+                        Performance has improved.
+
+Benchmarking simd_alphatensor_4x4x4: Collecting 100 samples in estimated 5.0002 s (5                                                                                    simd_alphatensor_4x4x4  time:   [92.532 ns 92.732 ns 92.946 ns]
+                        change: [-2.1432% -1.3174% -0.6179%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 5 outliers among 100 measurements (5.00%)
+  2 (2.00%) high mild
+  3 (3.00%) high severe
+
+Benchmarking ndarry_4x4x4: Collecting 100 samples in estimated 5.0006 s (12M iterati                                                                                    ndarry_4x4x4            time:   [400.73 ns 402.60 ns 404.58 ns]
+                        change: [-1.2978% -0.4004% +0.5315%] (p = 0.41 > 0.05)
+                        No change in performance detected.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) high mild
+  2 (2.00%) high severe
+```
+
 ### Generation
 
 You can manually generate this code via some scripts. Currently the algorithms are parsed by first converting the released numpy matrix files into python code. 🙏 big shout out to @https://github.com/99991 for this gem: [here](https://github.com/deepmind/alphatensor/issues/3). Once this python code is generated we can parse it into rust code and finally we can use the code as a library.

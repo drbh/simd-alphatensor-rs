@@ -8,3 +8,11 @@ edition = "2021"
 members = [
     "codegen",
 ]
+
+[dev-dependencies]
+criterion = "0.3"
+ndarray = "0.15.6"
+
+[[bench]]
+name = "my_benchmark"
+harness = false
