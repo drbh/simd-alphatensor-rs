@@ -2,9 +2,9 @@
 
 > tldr; alphatensor matrix breakthrough algorithims + simd + rust.
 
-This repo contains the cutting edge matrix multiplication algorithims that were found by [alphatensor](https://www.deepmind.com/blog/discovering-novel-algorithms-with-alphatensor), and as far as I know is the first novel machine imagined algorithim ever 🦾 🧠 
+This repo contains the cutting edge matrix multiplication algorithms that were found by [alphatensor](https://www.deepmind.com/blog/discovering-novel-algorithms-with-alphatensor), and as far as I know is the first novel machine imagined algorithm ever 🦾 🧠 
 
-This repo/library by defauly includes the first 25 algorithims and the one we are most interested in `multiply_4_by_4_matrix_a_with_4_by_4_matrix_b`. Addtionally this implementations aims to minimize the number of multiplication steps and attempts to aggregate as many multiplication steps into a single SIMD vector when possible.
+This repo/library by default includes the first 25 algorithms and the one we are most interested in `multiply_4_by_4_matrix_a_with_4_by_4_matrix_b`. Additionally this implementations aims to minimize the number of multiplication steps and attempts to aggregate as many multiplication steps into a single SIMD vector when possible.
 
 ### ELI5
 
@@ -41,7 +41,7 @@ fn main() {
 
 ### Generation
 
-You can manually generate this code via some scripts. Currently the algorithims are parsed by first converting the released numpy matrix files into python code. 🙏 big shout out to @https://github.com/99991 for this gem: [here](https://github.com/deepmind/alphatensor/issues/3). Once this python code is generated we can parse it into rust code and finally we can use the code as a library.
+You can manually generate this code via some scripts. Currently the algorithms are parsed by first converting the released numpy matrix files into python code. 🙏 big shout out to @https://github.com/99991 for this gem: [here](https://github.com/deepmind/alphatensor/issues/3). Once this python code is generated we can parse it into rust code and finally we can use the code as a library.
 
 ```bash
 # fetch files from deepmind's github
@@ -64,13 +64,13 @@ cargo run --example simple
 
 ### Known limitations
 
-1. This code is all experimental and is 2 steps removed from the output file shared by deepmind. We've tried our best to preseve the accuracy and the output is validated between steps. However please use this at you're own risk! and please please - do not use this in any production system!
-2. Not all of the algorithims are ported into rust. Since the output results in vert large expanded rust functions, for demonstration purposes this library only ships with the following alogorithim. This subset was selected since the specific `4x4x4` algoritim is likely the most applicable and also one of the algorithims that is superior to any known methods.
+1. This code is all experimental and is 2 steps removed from the output file shared by deepmind. We've tried our best to preserve the accuracy and the output is validated between steps. However please use this at you're own risk! and please please - do not use this in any production system!
+2. Not all of the algorithms are ported into rust. Since the output results in vert large expanded rust functions, for demonstration purposes this library only ships with the following algorithm. This subset was selected since the specific `4x4x4` algorithm is likely the most applicable and also one of the algorithms that is superior to any known methods.
 
 ### Implementation considerations
 
 ```rust
-// explict funcs for each algo and explicit input and output sized arrays
+// explicit funcs for each algo and explicit input and output sized arrays
 // since everything is statically sized we can keep everything on the stack
 pub fn multiply_2_by_2_matrix_a_with_2_by_2_matrix_b(a: [i32; 4], b: [i32; 4]) -> [i32; 4] {
     let [a11, a12, a21, a22] = a;
@@ -78,7 +78,7 @@ pub fn multiply_2_by_2_matrix_a_with_2_by_2_matrix_b(a: [i32; 4], b: [i32; 4]) -
 
     // we inline all of our multiplication steps in as few fixed sized 
     // 512-bit SIMD vector with 16 elements of type i32.
-    // we dont always need all of the elements but in this impl we skipped
+    // we don't always need all of the elements but in this impl we skipped
     // dynamically resizing the vector.
     let lefts = [i32x16::from([
         (a21 - a22),
@@ -119,7 +119,7 @@ pub fn multiply_2_by_2_matrix_a_with_2_by_2_matrix_b(a: [i32; 4], b: [i32; 4]) -
     
     // here we do all of the multiplications above in only as many steps as 
     // simd vectors. In this case we only need one instruction (multiplication)
-    // to perform all 7 multiplications needed for this algorithim
+    // to perform all 7 multiplications needed for this algorithm
     let hs = [lefts[0] * rights[0]];
 
     // do the final summation steps
@@ -136,11 +136,11 @@ pub fn multiply_2_by_2_matrix_a_with_2_by_2_matrix_b(a: [i32; 4], b: [i32; 4]) -
 ### TODOS
 
 1. parse numpy directly in rust
-2. include all (novel) algorithims
-3. add alot of benchmarking
+2. include all (novel) algorithms
+3. add a lot of benchmarking
 4. clean up codegen
 5. explain SIMD better
 6. adjust SIMD array to minimize trailing
 7. maybe SIMD config?
-8. recusively make into SIMD only steps?
+8. recursively make into SIMD only steps?
 9. tests tests tests
